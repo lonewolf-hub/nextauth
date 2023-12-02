@@ -1,51 +1,99 @@
 "use client";
-import axios from "axios";
-import Link from "next/link";
-import React, {useState} from "react";
-import {toast} from "react-hot-toast";
-import {useRouter} from "next/navigation";
+// profilePage.tsx
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import Link from 'next/link';
+import { toast } from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
+import PopupModal from '../components/popup/PopupModal';
 
-const profilePage = () => {
-  const router = useRouter()
-    const [data, setData] = useState("nothing")
-    const logout = async () => {
-        try {
-            await axios.get('/api/users/logout')
-            toast.success('Logout successful')
-            router.push('/login')
-        } catch (error:any) {
-            console.log(error.message);
-            toast.error(error.message)
-        }
-    }
+interface UserData {
+    username: string;
+    // Add other properties as needed
+  }
+  
+  interface UserProfileProps {
+    params: {
+      id: string;
+    };
+  }
+  
+  // ... (imports and other code)
 
+const UserProfile: React.FC<UserProfileProps> = ({ params }: UserProfileProps) => {
+    const router = useRouter();
+    const [data, setData] = useState<string>('nothing');
+    const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+    const [username, setUsername] = useState<string | null>(null);
+  
     const getUserDetails = async () => {
-        const res = await axios.get('/api/users/user')
+      try {
+        const res = await axios.get('/api/users/user');
         console.log(res.data);
-        setData(res.data.data._id)
-    }
-
+        setData(res.data.data._id);
+        setUsername(res.data.data.username);
+      } catch (error: any) {
+        console.error(error.message);
+        toast.error(error.message);
+      }
+    };
+  
+    useEffect(() => {
+      getUserDetails();
+    }, []); // Call getUserDetails when the component mounts
+  
+    const handleLogout = () => {
+      setIsLogoutModalOpen(true);
+    };
+  
+    const handleCloseLogoutModal = () => {
+      setIsLogoutModalOpen(false);
+    };
+  
+    const handleConfirmLogout = async () => {
+      try {
+        await axios.get('/api/users/logout');
+        toast.success('Logout successful');
+        router.push('/login');
+      } catch (error: any) {
+        console.error(error.message);
+        toast.error(error.message);
+      }
+    };
+  
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen py-2">
-            <h1>Profile</h1>
-            <hr />
-            <p>Profile page</p>
-            <h2 className="p-1 rounded bg-green-500">{data === 'nothing' ? "Nothing" : <Link href={`/profile/${data}`}>{data}
-            </Link>}</h2>
-        <hr />
+      <div className="flex flex-col items-center justify-center min-h-screen py-8 bg-gradient-to-r from-blue-500 to-green-500 text-white">
+        <h1 className="text-4xl font-bold mb-4">
+          Welcome, {username || 'Guest'}
+        </h1>
+        <hr className="border-white w-1/4 mb-6" />
+        <h2 className="p-3 rounded bg-indigo-600">
+          {data === 'nothing' ? 'Nothing' : <Link href={`/profile/${data}`}>{data}</Link>}
+        </h2>
+        <hr className="border-white w-1/4 my-6" />
         <button
-        onClick={logout}
-        className="bg-blue-500 mt-4 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-        >Logout</button>
-
+          onClick={handleLogout}
+          className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+        >
+          Logout
+        </button>
+  
         <button
-        onClick={getUserDetails}
-        className="bg-green-800 mt-4 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-        >GetUser Details</button>
-
-
-            </div>
-    )
-}
-
-export default profilePage
+          onClick={getUserDetails}
+          className="bg-green-800 mt-4 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+        >
+          Refresh User Details
+        </button>
+  
+        <PopupModal
+          isOpen={isLogoutModalOpen}
+          onClose={handleCloseLogoutModal}
+          onConfirm={handleConfirmLogout}
+          message="Are you sure you want to logout?"
+        />
+      </div>
+    );
+  };
+  
+  export default UserProfile;
+  

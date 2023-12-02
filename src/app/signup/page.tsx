@@ -1,35 +1,37 @@
 "use client";
 import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation'; // Import the correct module
+import { useRouter } from 'next/navigation'; 
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import Link from 'next/link';
 
-const signupPage = () => {
+const SignupPage = () => {
   const router = useRouter();
-
-  const [user, setUser] = React.useState({
+  const [user, setUser] = useState({
     email: "",
     password: "",
     username: ""
   });
 
-  const [buttonDisabled, setButtonDisabled] = React.useState(true);
-  const [loading, setLoading] = React.useState(false);
+  const [buttonDisabled, setButtonDisabled] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const onSignup = async () => {
     try {
       setLoading(true);
       const response = await axios.post("/api/users/signup", user);
       console.log("signup success", response.data);
+      toast.success("Signup Success");
       router.push("/login");
-    } catch (error:any) {
+    } catch (error: any) {
       console.log("Signup failed", error.message);
       toast.error(error.message);
+      setError(error.message);
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
     if (user.email.length > 0 && user.password.length > 0 && user.username.length > 0) {
@@ -41,47 +43,54 @@ const signupPage = () => {
 
   return (
     <div className='flex flex-col items-center justify-center min-h-screen py-2'>
-      <h1>{loading ? "Processing" : "Signup"}</h1>
-      <hr />
-      <label htmlFor="username">username</label>
-      <input
-        className='border border-gray-500 p-2 focus:outline-none'
-        id='username'
-        type='text'
-        value={user.username}
-        onChange={(e) => setUser({ ...user, username: e.target.value })}
-        placeholder='Username'
-      />
+      <h1 className='text-3xl font-bold mb-4'>{loading ? "Processing" : "Signup"}</h1>
+      <form className='flex flex-col w-full max-w-md'>
+        <label htmlFor="username" className='text-sm font-medium text-gray-600 mb-1'>Username</label>
+        <input
+          className='border border-gray-500 p-2 mb-4 rounded focus:outline-none focus:border-blue-500'
+          id='username'
+          type='text'
+          value={user.username}
+          onChange={(e) => setUser({ ...user, username: e.target.value })}
+          placeholder='Enter your username'
+        />
 
-      <label htmlFor="email">email</label>
-      <input
-        className='border border-gray-500 p-2 focus:outline-none'
-        id='email'
-        type='email'
-        value={user.email}
-        onChange={(e) => setUser({ ...user, email: e.target.value })}
-        placeholder='email'
-      />
+        <label htmlFor="email" className='text-sm font-medium text-gray-600 mb-1'>Email</label>
+        <input
+          className='border border-gray-500 p-2 mb-4 rounded focus:outline-none focus:border-blue-500'
+          id='email'
+          type='email'
+          value={user.email}
+          onChange={(e) => setUser({ ...user, email: e.target.value })}
+          placeholder='Enter your email'
+        />
 
-      <label htmlFor="password">password</label>
-      <input
-        className='border border-gray-500 p-2 focus:outline-none'
-        id='password'
-        type='password'
-        value={user.password}
-        onChange={(e) => setUser({ ...user, password: e.target.value })}
-        placeholder='password'
-      />
+        <label htmlFor="password" className='text-sm font-medium text-gray-600 mb-1'>Password</label>
+        <input
+          className='border border-gray-500 p-2 mb-4 rounded focus:outline-none focus:border-blue-500'
+          id='password'
+          type='password'
+          value={user.password}
+          onChange={(e) => setUser({ ...user, password: e.target.value })}
+          placeholder='Enter your password'
+        />
 
-      <button
-        onClick={onSignup}
-        className='p-2 m-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600'
-      >
-        {buttonDisabled ? "No signup until value is filled" : "You can proceed to signup"}
-      </button>
-      <Link href="/login">Already signed up? Login here</Link>
+        <button
+          onClick={onSignup}
+          className={`p-2 border rounded focus:outline-none ${buttonDisabled ? 'bg-gray-300 cursor-not-allowed' : 'bg-blue-500 text-white hover:bg-blue-600'}`}
+          disabled={buttonDisabled || loading}
+        >
+          {buttonDisabled ? "Fill in all fields to signup" : "Signup"}
+        </button>
+
+        {error && <p className="text-red-500 mt-2">{error}</p>}
+
+        <div className='mt-4 text-sm text-gray-600'>
+          <Link href="/login" className='text-blue-500 hover:underline'>Already signed up? Login here</Link>
+        </div>
+      </form>
     </div>
-  )
-}
+  );
+};
 
-export default signupPage;
+export default SignupPage;
