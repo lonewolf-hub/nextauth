@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import Link from 'next/link';
+import Navbar from '../components/navbar/Navbar';
 
 const SignupPage: React.FC = () => {
   const router = useRouter();
@@ -53,9 +54,11 @@ const SignupPage: React.FC = () => {
   }, [user]);
 
   return (
-    <div className="flex items-center justify-center min-h-screen  bg-blue-400">
-      <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
-        <h1 className="text-3xl font-bold mb-4">{loading ? "Processing" : "Signup"}</h1>
+    <>
+    <Navbar/>
+    <div className="flex items-center justify-center min-h-screen  bg-maincolor">
+      <div className="bg-primary p-8 rounded shadow-md w-full max-w-md">
+        <h1 className="text-3xl font-bold mb-4">{loading ? "Processing" : "Register"}</h1>
         <form className="flex flex-col">
           <label htmlFor="username" className="text-sm font-medium text-gray-600 mb-1">
             Username
@@ -96,23 +99,24 @@ const SignupPage: React.FC = () => {
           <button
             onClick={onSignup}
             className={`p-2 border rounded focus:outline-none ${
-              buttonDisabled ? 'bg-gray-300 cursor-not-allowed' : 'bg-blue-500 text-white hover:bg-blue-600'
+              buttonDisabled ? 'bg-gray-300 cursor-not-allowed' : 'bg-accent text-white hover:bg-blue-600'
             }`}
             disabled={buttonDisabled || loading}
           >
-            {buttonDisabled ? "Fill in all fields to signup" : "Signup"}
+            {buttonDisabled ? "Fill in all fields to register" : "Register"}
           </button>
 
           {error && <p className="text-red-500 mt-2">{error}</p>}
 
           <div className="mt-4 text-sm text-gray-600">
-            <Link href="/login" className="text-blue-500 hover:underline">
+            <Link href="/login" className="text-maincolor hover:underline">
               Already signed up? Login here
             </Link>
           </div>
         </form>
       </div>
     </div>
+    </>
   );
 };
 

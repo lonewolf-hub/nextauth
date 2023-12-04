@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import Link from 'next/link';
+import Navbar from '../components/navbar/Navbar';
 
 const LoginPage = () => {
   const router = useRouter();
@@ -41,15 +42,17 @@ const LoginPage = () => {
   }, [user]);
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-blue-400">
-      <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
+    <>
+    <Navbar/>
+    <div className="flex items-center justify-center min-h-screen bg-maincolor">
+      <div className="bg-primary p-8 rounded shadow-md w-full max-w-md">
         <h1 className="text-3xl font-bold mb-4">{loading ? "Processing" : "Login"}</h1>
         <form className="flex flex-col">
           <label htmlFor="email" className="text-sm font-medium text-gray-600 mb-1">
             Email
           </label>
           <input
-            className="border border-gray-500 p-2 mb-4 rounded focus:outline-none focus:border-blue-500"
+            className="border border-gray-500 p-2 mb-4 rounded focus:outline-none focus:border-blue-500 bg-transparent"
             id="email"
             type="email"
             value={user.email}
@@ -61,7 +64,7 @@ const LoginPage = () => {
             Password
           </label>
           <input
-            className="border border-gray-500 p-2 mb-4 rounded focus:outline-none focus:border-blue-500"
+            className="border border-gray-500 p-2 mb-4 rounded focus:outline-none focus:border-blue-500 bg-transparent"
             id="password"
             type="password"
             value={user.password}
@@ -72,7 +75,7 @@ const LoginPage = () => {
           <button
             onClick={onLogin}
             className={`p-2 border rounded focus:outline-none ${
-              buttonDisabled ? 'bg-gray-300 cursor-not-allowed' : 'bg-blue-500 text-white hover:bg-blue-600'
+              buttonDisabled ? 'bg-gray-300 cursor-not-allowed' : 'bg-accent text-white hover:bg-blue-600'
             }`}
             disabled={buttonDisabled || loading}
           >
@@ -82,13 +85,14 @@ const LoginPage = () => {
           {error && <p className="text-red-500 mt-2">{error}</p>}
 
           <div className="mt-4 text-sm text-gray-600">
-            <Link href="/signup" className="text-blue-500 hover:underline">
+            <Link href="/signup" className="text-maincolor hover:underline">
               Don't have an account? Sign up here
             </Link>
           </div>
         </form>
       </div>
     </div>
+    </>
   );
 };
 

@@ -13,7 +13,7 @@ export function middleware(request: NextRequest) {
   }
 
   if ((!isPublicPath && !token)|| (path === '/' && !token)) {
-    return NextResponse.redirect(new URL('/signup', request.nextUrl));
+    return NextResponse.redirect(new URL('/login', request.nextUrl));
   }
 
   return null; // Return null if no redirection is needed
