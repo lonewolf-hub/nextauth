@@ -2,7 +2,7 @@
 import React from 'react';
 
 interface PopupModalProps {
-  isOpen: boolean;
+  isOpen?: boolean;
   onClose: () => void;
   onConfirm: () => void;
   message: string;

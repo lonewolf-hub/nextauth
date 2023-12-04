@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { toast } from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import PopupModal from '../components/popup/PopupModal';
+import Navbar from '../components/navbar/Navbar';
 
 interface UserData {
   username: string;
@@ -59,6 +60,8 @@ const UserProfile: React.FC<UserProfileProps> = ({ params }: UserProfileProps) =
   };
 
   return (
+  <>
+  <Navbar/>
     <div className="flex flex-col items-center justify-center min-h-screen py-8 bg-gradient-to-r from-blue-500 to-green-500 text-white">
       <h1 className="text-4xl font-bold mb-4">
         Welcome, {username || 'Guest'}
@@ -89,6 +92,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ params }: UserProfileProps) =
         message="Are you sure you want to logout?"
       />
     </div>
+    </>
   );
 };
 
